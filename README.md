@@ -1,0 +1,1 @@
+Two command line utilities for converting a bmp (black and white) image to a data array (1 byte per 8 pixels) and back, for use in firmware with OLED displays.
