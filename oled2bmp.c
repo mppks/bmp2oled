@@ -12,14 +12,14 @@
 int main(int argc, char *argv[]) {
     
     if (argc < 5) {
-        printf("Usage: %s <output_file.bmp> <width_px> <height_px> <input_hex_data_file.txt>\n", argv[0]);
+        printf("Usage: %s <input_data_file.txt> <width_px> <height_px> <output_image.bmp>\n", argv[0]);
         return 1;
     }
     
     int width, height;
 
-    char *output_file = argv[1];
-    char *input_file = argv[4];
+    char *input_file = argv[1];
+    char *output_file = argv[4];   
 
     if (!output_file || *output_file == '\0') {
         fprintf(stderr, "Error: Invalid input for the output file name\n"); 
@@ -48,10 +48,10 @@ int main(int argc, char *argv[]) {
     }
 
     // Считываем данные из файла во входной массив
-    unsigned char *frame = (unsigned char*)malloc(width * height / 8);
+    unsigned char *input = (unsigned char*)malloc(width * height / 8);
 
     int i = 0;
-    while (fscanf(file,"%X, ", &frame[i]) != EOF) {
+    while (fscanf(file,"%X, ", &input[i]) != EOF) {
         i++;
     }
 
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
     for (int page = 0; page < (height / 8); page++) {
         for (int x = 0; x < width; x++) {
             // Берем байт из исходного массива
-            unsigned char byte = frame[page * width + x];
+            unsigned char byte = input[page * width + x];
             
             // Проходим по всем 8 битам этого байта
             for (int bit = 0; bit < 8; bit++) {
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     // Записываем результат
     stbi_write_bmp(output_file, width, height, 1, output);
 
-    free(frame);
+    free(input);
     free(output);
 
     return 0;
