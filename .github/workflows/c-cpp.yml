@@ -13,10 +13,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - with:
-        qmk_repo: nothings/stb
-        qmk_ref: master
+      with:
+        submodules: recursive
+
     - name: Compile bmp2oled
       run: gcc bmp2oled.c -o bmp2oled -lm
+
     - name: Compile oled2bmp
-      run: gcc oled2bmp -o oled2bmp
+      run: gcc oled2bmp.c -o oled2bmp -lm
