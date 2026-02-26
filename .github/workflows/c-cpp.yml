@@ -38,13 +38,11 @@ jobs:
           gcc oled2bmp.c -o oled2bmp -lm
 
       - name: Delete existing release
-        uses: dev-drprasad/delete-tag-and-release@v1.1
+        uses: author/action-drop-release@1.0.2
         continue-on-error: true
         with:
-          tag_name: ${{ github.ref_name }}
-          delete_release: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -56,5 +54,4 @@ jobs:
           name: Latest ${{ github.ref_name }}
           generate_release_notes: true
           make_latest: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
