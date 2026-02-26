@@ -1,0 +1,22 @@
+name: C Compilation CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - with:
+        qmk_repo: nothings/stb
+        qmk_ref: master
+    - name: Compile bmp2oled
+      run: gcc bmp2oled.c -o bmp2oled -lm
+    - name: Compile oled2bmp
+      run: gcc oled2bmp -o oled2bmp
