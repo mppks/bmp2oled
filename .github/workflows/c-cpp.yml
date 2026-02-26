@@ -3,8 +3,8 @@ name: C Compilation CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -21,3 +21,39 @@ jobs:
 
     - name: Compile oled2bmp
       run: gcc oled2bmp.c -o oled2bmp -lm
+
+  publish:
+    name: 'Bmp2oled Publish'
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build release binaries
+        run: |
+          gcc bmp2oled.c -o bmp2oled -lm
+          gcc oled2bmp.c -o oled2bmp -lm
+
+      - name: Delete existing release
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          tag_name: ${{ github.ref_name }}
+          delete_release: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            bmp2oled
+            oled2bmp
+          tag_name: ${{ github.ref_name }}
+          name: Latest ${{ github.ref_name }}
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
